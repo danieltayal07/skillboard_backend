@@ -7,13 +7,7 @@ import { authenticate } from "../middleware/auth.js";
 
 // Load environment variables
 dotenv.config();
-console.log('FRONTEND_URL set to:', process.env.FRONTEND_URL);
-// Inside your server.js or auth.js file (temporarily)
-if (process.env.NEXTAUTH_SECRET) {
-  console.log(`✅ SECRET STATUS: Key loaded. Length is ${process.env.NEXTAUTH_SECRET}`);
-} else {
-  console.error("❌ SECRET ERROR: Key is undefined or empty.");
-}
+
 // Validate required environment variables
 const requiredEnvVars = ['PRISMA_DATABASE_URL', 'NEXTAUTH_SECRET'];
 const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
@@ -159,38 +153,38 @@ app.use((req, res) => {
 });
 
 // Start server with error handling
-const server = app.listen(PORT, () => {
-  console.log(`🚀 Server is running on http://localhost:${PORT}`);
-  console.log(`📝 Health check: http://localhost:${PORT}/health`);
-  console.log(`🔐 Auth routes: http://localhost:${PORT}/api/auth`);
-});
+// const server = app.listen(PORT, () => {
+//   console.log(`🚀 Server is running on http://localhost:${PORT}`);
+//   console.log(`📝 Health check: http://localhost:${PORT}/health`);
+//   console.log(`🔐 Auth routes: http://localhost:${PORT}/api/auth`);
+// });
 
-// Handle server errors
-server.on('error', (error) => {
-  if (error.code === 'EADDRINUSE') {
-    console.error(`❌ Port ${PORT} is already in use.`);
-    console.error(`💡 Try: lsof -ti:${PORT} | xargs kill -9`);
-    process.exit(1);
-  } else {
-    console.error('❌ Server error:', error);
-    process.exit(1);
-  }
-});
+// // Handle server errors
+// server.on('error', (error) => {
+//   if (error.code === 'EADDRINUSE') {
+//     console.error(`❌ Port ${PORT} is already in use.`);
+//     console.error(`💡 Try: lsof -ti:${PORT} | xargs kill -9`);
+//     process.exit(1);
+//   } else {
+//     console.error('❌ Server error:', error);
+//     process.exit(1);
+//   }
+// });
 
-// Graceful shutdown
-process.on('SIGTERM', () => {
-  console.log('SIGTERM signal received: closing HTTP server');
-  server.close(() => {
-    console.log('HTTP server closed');
-  });
-});
+// // Graceful shutdown
+// process.on('SIGTERM', () => {
+//   console.log('SIGTERM signal received: closing HTTP server');
+//   server.close(() => {
+//     console.log('HTTP server closed');
+//   });
+// });
 
-process.on('SIGINT', () => {
-  console.log('\nSIGINT signal received: closing HTTP server');
-  server.close(() => {
-    console.log('HTTP server closed');
-    process.exit(0);
-  });
-});
+// process.on('SIGINT', () => {
+//   console.log('\nSIGINT signal received: closing HTTP server');
+//   server.close(() => {
+//     console.log('HTTP server closed');
+//     process.exit(0);
+//   });
+// });
 
 export default app;
