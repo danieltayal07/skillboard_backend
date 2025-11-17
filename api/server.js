@@ -8,6 +8,12 @@ import { authenticate } from "../middleware/auth.js";
 // Load environment variables
 dotenv.config();
 console.log('FRONTEND_URL set to:', process.env.FRONTEND_URL);
+// Inside your server.js or auth.js file (temporarily)
+if (process.env.NEXTAUTH_SECRET) {
+  console.log(`✅ SECRET STATUS: Key loaded. Length is ${process.env.NEXTAUTH_SECRET}`);
+} else {
+  console.error("❌ SECRET ERROR: Key is undefined or empty.");
+}
 // Validate required environment variables
 const requiredEnvVars = ['PRISMA_DATABASE_URL', 'NEXTAUTH_SECRET'];
 const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
