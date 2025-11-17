@@ -9,7 +9,7 @@ import { authenticate } from "../middleware/auth.js";
 dotenv.config();
 console.log('FRONTEND_URL set to:', process.env.FRONTEND_URL);
 // Validate required environment variables
-const requiredEnvVars = ['DATABASE_URL', 'NEXTAUTH_SECRET'];
+const requiredEnvVars = ['PRISMA_DATABASE_URL', 'NEXTAUTH_SECRET'];
 const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
 
 if (missingEnvVars.length > 0) {
