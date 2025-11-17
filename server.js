@@ -25,10 +25,46 @@ const PORT = process.env.PORT || 3000;
 app.use(cors({
   origin: process.env.FRONTEND_URL || "http://localhost:3001",
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Handle OPTIONS requests for CORS preflight
+app.options('*', (req, res) => {
+  res.header('Access-Control-Allow-Origin', process.env.FRONTEND_URL || "http://localhost:3001");
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.sendStatus(200);
+});
+
+// Log all incoming requests for debugging
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path}`);
+  next();
+});
+
+// Root route
+app.get("/", (req, res) => {
+  res.json({
+    success: true,
+    message: "Skill Board API",
+    version: "1.0.0",
+    endpoints: {
+      health: "/health",
+      auth: {
+        signup: "POST /api/auth/signup",
+        login: "POST /api/auth/login",
+        me: "GET /api/auth/me",
+        logout: "POST /api/auth/logout"
+      }
+    },
+    timestamp: new Date().toISOString(),
+  });
+});
 
 // Health check route
 app.get("/health", (req, res) => {
@@ -72,18 +108,49 @@ app.use((err, req, res, next) => {
   });
 });
 
-// 404 handler
+// 404 handler - must be last
 app.use((req, res) => {
+  console.log(`❌ Route not found: ${req.method} ${req.path}`);
   res.status(404).json({
     success: false,
     message: "Route not found",
+    path: req.path,
+    method: req.method,
   });
 });
 
-// Start server
-app.listen(PORT, () => {
+// Start server with error handling
+const server = app.listen(PORT, () => {
   console.log(`🚀 Server is running on http://localhost:${PORT}`);
   console.log(`📝 Health check: http://localhost:${PORT}/health`);
   console.log(`🔐 Auth routes: http://localhost:${PORT}/api/auth`);
+});
+
+// Handle server errors
+server.on('error', (error) => {
+  if (error.code === 'EADDRINUSE') {
+    console.error(`❌ Port ${PORT} is already in use.`);
+    console.error(`💡 Try: lsof -ti:${PORT} | xargs kill -9`);
+    process.exit(1);
+  } else {
+    console.error('❌ Server error:', error);
+    process.exit(1);
+  }
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM signal received: closing HTTP server');
+  server.close(() => {
+    console.log('HTTP server closed');
+  });
+});
+
+process.on('SIGINT', () => {
+  console.log('\nSIGINT signal received: closing HTTP server');
+  server.close(() => {
+    console.log('HTTP server closed');
+    process.exit(0);
+  });
 });
 
