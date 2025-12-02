@@ -17,7 +17,7 @@ const signup = async (req, res) => {
     if (existing) {
       return res.status(400).json({ error: "Email already registered" });
     }
-
+    console.log("SIGNUP BODY:", req.body);
     const hashed = await bcrypt.hash(password, 10);
 
     await prisma.user.create({
@@ -30,10 +30,13 @@ const signup = async (req, res) => {
     });
 
     return res.status(201).json({ message: "User created successfully" });
-  } catch (err) {
+} catch (err) {
     console.error("Signup error:", err);
-    return res.status(500).json({ error: "Server error" });
+    console.error("Full error:", JSON.stringify(err, null, 2));
+    console.error(err.stack);
+    return res.status(500).json({ error: err.message || "Server error" });
   }
+  
 };
 
 const login = async (req, res) => {

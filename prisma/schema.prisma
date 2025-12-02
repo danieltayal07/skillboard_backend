@@ -12,7 +12,7 @@ model User {
   name      String
   email     String        @unique
   password  String
-  role      String        // "admin" | "employer" | "applicant"
+  role      String    
   jobs      Job[]         @relation("EmployerJobs")
   apps      Application[]
   createdAt DateTime      @default(now())
@@ -36,7 +36,7 @@ model Application {
   id        Int      @id @default(autoincrement())
   jobId     Int
   userId    Int
-  status    String   @default("applied") // applied | reviewing | shortlisted | rejected
+  status    String   @default("applied") 
   job       Job      @relation(fields: [jobId], references: [id])
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())

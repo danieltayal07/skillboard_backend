@@ -8,7 +8,13 @@ const authRoutes = require("./routes/auth.routes");
 const jobsRoutes = require("./routes/jobs.routes");
 const applicationsRoutes = require("./routes/applications.routes");
 const adminRoutes = require("./routes/admin.routes");
-
+console.log("Loaded Routes:", {
+    authRoutes: typeof authRoutes,
+    jobsRoutes: typeof jobsRoutes,
+    applicationsRoutes: typeof applicationsRoutes,
+    adminRoutes: typeof adminRoutes,
+  });
+  
 const app = express();
 
 // Middlewares
@@ -28,7 +34,7 @@ app.get("/", (req, res) => {
 });
 
 // Start server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
