@@ -1,8 +1,5 @@
 const prisma = require("../config/prisma");
 
-// --------------------------------------------------
-// GET ALL USERS
-// --------------------------------------------------
 const getAllUsers = async (req, res) => {
   try {
     const users = await prisma.user.findMany({
@@ -23,9 +20,6 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-// --------------------------------------------------
-// DELETE USER (Admin only)
-// --------------------------------------------------
 const deleteUser = async (req, res) => {
   try {
     const id = Number(req.params.id);
@@ -33,7 +27,6 @@ const deleteUser = async (req, res) => {
     const user = await prisma.user.findUnique({ where: { id } });
     if (!user) return res.status(404).json({ error: "User not found" });
 
-    // Cascade delete apps & jobs
     await prisma.application.deleteMany({ where: { userId: id } });
     await prisma.job.deleteMany({ where: { employerId: id } });
 
@@ -46,9 +39,6 @@ const deleteUser = async (req, res) => {
   }
 };
 
-// --------------------------------------------------
-// GET ALL JOBS
-// --------------------------------------------------
 const getAllJobs = async (req, res) => {
   try {
     const jobs = await prisma.job.findMany({
@@ -65,9 +55,7 @@ const getAllJobs = async (req, res) => {
   }
 };
 
-// --------------------------------------------------
-// DELETE ANY JOB (Admin only)
-// --------------------------------------------------
+
 const deleteJobAdmin = async (req, res) => {
   try {
     const id = Number(req.params.id);
@@ -75,7 +63,6 @@ const deleteJobAdmin = async (req, res) => {
     const job = await prisma.job.findUnique({ where: { id } });
     if (!job) return res.status(404).json({ error: "Job not found" });
 
-    // Delete applications related to job
     await prisma.application.deleteMany({ where: { jobId: id } });
 
     await prisma.job.delete({ where: { id } });

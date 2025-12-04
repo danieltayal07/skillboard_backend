@@ -1,14 +1,9 @@
 const prisma = require("../config/prisma");
 
-// ----------------------------
-// APPLY TO A JOB
-// ----------------------------
 const applyJob = async (req, res) => {
   try {
     const jobId = Number(req.params.id);
     const userId = req.user.id;
-
-    // Prevent duplicate applications
     const exists = await prisma.application.findFirst({
       where: { jobId, userId }
     });
@@ -26,9 +21,6 @@ const applyJob = async (req, res) => {
   }
 };
 
-// ----------------------------
-// EMPLOYER — SEE ALL APPLICATIONS
-// ----------------------------
 const getEmployerApplications = async (req, res) => {
   try {
     const employerId = req.user.id;
@@ -50,9 +42,6 @@ const getEmployerApplications = async (req, res) => {
   }
 };
 
-// ----------------------------
-// APPLICANT — SEE OWN APPLICATIONS
-// ----------------------------
 const getMyApplications = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -74,10 +63,6 @@ const getMyApplications = async (req, res) => {
   }
 };
 
-// ----------------------------
-// UPDATE APPLICATION STATUS
-// employer/admin
-// ----------------------------
 const updateStatus = async (req, res) => {
   try {
     const appId = Number(req.params.id);
@@ -92,7 +77,6 @@ const updateStatus = async (req, res) => {
 
     const loggedIn = req.user;
 
-    // Only employer who owns job OR admin can change status
     if (loggedIn.role !== "admin" && app.job.employerId !== loggedIn.id)
       return res.status(403).json({ error: "Not allowed" });
 

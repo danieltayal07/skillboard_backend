@@ -1,8 +1,5 @@
 const prisma = require("../config/prisma");
 
-// ----------------------------
-// GET ALL JOBS
-// ----------------------------
 const getJobs = async (req, res) => {
   try {
     const jobs = await prisma.job.findMany({
@@ -20,9 +17,6 @@ const getJobs = async (req, res) => {
   }
 };
 
-// ----------------------------
-// GET JOB BY ID
-// ----------------------------
 const getJobById = async (req, res) => {
   try {
     const job = await prisma.job.findUnique({
@@ -40,9 +34,6 @@ const getJobById = async (req, res) => {
   }
 };
 
-// ----------------------------
-// CREATE JOB (Employer)
-// ----------------------------
 const createJob = async (req, res) => {
   try {
     const employerId = req.user.id;
@@ -60,9 +51,6 @@ const createJob = async (req, res) => {
   }
 };
 
-// ----------------------------
-// UPDATE JOB
-// ----------------------------
 const updateJob = async (req, res) => {
   try {
     const jobId = Number(req.params.id);
@@ -86,11 +74,6 @@ const updateJob = async (req, res) => {
   }
 };
 
-// ----------------------------
-// DELETE JOB
-// Employer can delete their job
-// Admin can delete any job
-// ----------------------------
 const deleteJob = async (req, res) => {
   try {
     const jobId = Number(req.params.id);
@@ -111,9 +94,6 @@ const deleteJob = async (req, res) => {
   }
 };
 
-// ----------------------------
-// GET EMPLOYER JOBS
-// ----------------------------
 const getEmployerJobs = async (req, res) => {
   try {
     const employerId = req.user.id;

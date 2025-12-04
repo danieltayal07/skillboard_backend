@@ -10,7 +10,6 @@ const {
 
 const router = express.Router();
 
-// All admin routes: must be logged in + admin role
 router.get("/admin/users", auth, requireRole("admin"), getAllUsers);
 router.get("/admin/jobs", auth, requireRole("admin"), getAllJobs);
 
