@@ -1,5 +1,6 @@
 const prisma = require("../config/prisma");
 
+// UPDATE FUNCTIONALITY 
 const applyJob = async (req, res) => {
   try {
     const jobId = Number(req.params.id);

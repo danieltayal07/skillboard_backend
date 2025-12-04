@@ -2,24 +2,37 @@ const prisma = require("../config/prisma");
 
 const getAllUsers = async (req, res) => {
   try {
-    const users = await prisma.user.findMany({
-      orderBy: { createdAt: "desc" },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        createdAt: true
-      }
-    });
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
 
-    res.json({ users });
+    const [users, total] = await Promise.all([
+      prisma.user.findMany({
+        orderBy: { createdAt: "desc" },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+          createdAt: true
+        },
+        skip,
+        take: limit
+      }),
+      prisma.user.count()
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    res.json({ page, limit, total, totalPages, users });
+
   } catch (err) {
     console.error("Admin get users error:", err);
     res.status(500).json({ error: "Cannot fetch users" });
   }
 };
 
+// DELETE FUNCTIONALITY - ADMIN CAN DELETE ANY USER
 const deleteUser = async (req, res) => {
   try {
     const id = Number(req.params.id);
@@ -41,21 +54,33 @@ const deleteUser = async (req, res) => {
 
 const getAllJobs = async (req, res) => {
   try {
-    const jobs = await prisma.job.findMany({
-      include: {
-        employer: { select: { name: true } }
-      },
-      orderBy: { createdAt: "desc" }
-    });
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 2;
+    const skip = (page - 1) * limit;
 
-    res.json({ jobs });
+    const [jobs, total] = await Promise.all([
+      prisma.job.findMany({
+        include: {
+          employer: { select: { name: true } }
+        },
+        orderBy: { createdAt: "desc" },
+        skip,
+        take: limit
+      }),
+      prisma.job.count()
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    res.json({ page, limit, total, totalPages, jobs });
+
   } catch (err) {
     console.error("Admin get jobs error:", err);
     res.status(500).json({ error: "Cannot fetch jobs" });
   }
 };
 
-
+// DELETE FUNCTIONALITY  - ADMIN CAN DELETE ANY JOB LISTED
 const deleteJobAdmin = async (req, res) => {
   try {
     const id = Number(req.params.id);
