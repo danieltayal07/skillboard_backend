@@ -1,8 +1,4 @@
----
 
-# ✅ **README.md (Backend) — COPY THIS INTO skillboard-backend**
-
-```md
 # SkillBoard – Backend API  
 ### Express.js + Prisma ORM + PostgreSQL | Full Job Portal REST API
 
